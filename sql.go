@@ -40,7 +40,7 @@ type SQL struct {
 	params []interface{}
 }
 
-func NewSQL(str string, params []interface{}) SQL {
+func NewSQL(str string, params ...interface{}) SQL {
 	sql := SQL{}
 	sql.str = str
 	sql.params = params
@@ -49,7 +49,7 @@ func NewSQL(str string, params []interface{}) SQL {
 
 // 补上一个条件
 func (s SQL) ConcatSQL(s2 SQL) SQL {
-	res := NewSQL(s.str, s.params[:])
+	res := NewSQL(s.str, s.params[:]...)
 	res.str += s2.str
 	res.params = append(res.params, s2.params...)
 	return res
@@ -59,20 +59,20 @@ func (s SQL) ConcatSQL(s2 SQL) SQL {
 func (s SQL) In(key string, params []string) SQL {
 	str, args := makeBatchSelectStr(params)
 
-	sql2 := NewSQL(" where `"+key+"`"+" in "+str+" ", args)
+	sql2 := NewSQL(" where `"+key+"`"+" in "+str+" ", args...)
 	sql := s.ConcatSQL(sql2)
 	return sql
 }
 func (s SQL) AndIn(key string, params []string) SQL {
 	str, args := makeBatchSelectStr(params)
 
-	sql2 := NewSQL(" and `"+key+"`"+" in "+str+" ", args)
+	sql2 := NewSQL(" and `"+key+"`"+" in "+str+" ", args...)
 	sql := s.ConcatSQL(sql2)
 	return sql
 }
 
 func (s SQL) clone() SQL {
-	return NewSQL(s.str, s.params[:])
+	return NewSQL(s.str, s.params[:]...)
 }
 
 func (s SQL) Limit(limit int) SQL {

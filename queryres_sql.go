@@ -7,14 +7,14 @@ import (
 
 func (q *QueryRes) ToInsertSQL(tableName string, fieldsExclude map[string]int) SQL {
 	if q.err != nil {
-		return NewSQL("", nil)
+		return NewSQL("")
 	}
 	return sqlFromDatasForInsert(q.Data(), tableName, fieldsExclude)
 }
 
 func (q *QueryRes) ToUpdateSQL(tableName, condition string, updateFields map[string]int) SQL {
 	if q.err != nil {
-		return NewSQL("", nil)
+		return NewSQL("")
 	}
 	return sqlFromDataForUpdate(q.Data()[0], tableName, condition, updateFields)
 }
@@ -57,7 +57,7 @@ func _sqlFromQueryRes(data map[string]interface{}, fields map[string]int, includ
 func sqlFromDataForInsert(data map[string]interface{}, tableName string, fieldsExclude map[string]int) SQL {
 	insertFields, insertMarks, insertParams, _ := _sqlFromQueryRes(data, fieldsExclude, false)
 	insertSQL := "insert into " + tableName + "  " + insertFields + " values " + insertMarks
-	return NewSQL(insertSQL, insertParams)
+	return NewSQL(insertSQL, insertParams...)
 }
 
 // 生成一个update语句
@@ -70,13 +70,13 @@ func sqlFromDataForUpdate(data map[string]interface{}, tableName, condition stri
 		insertSQL = "update " + tableName + " set " + updateStr + " where " + condition
 	}
 
-	return NewSQL(insertSQL, insertParams)
+	return NewSQL(insertSQL, insertParams...)
 }
 
 func sqlFromDatasForInsert(data []map[string]interface{}, tableName string, fieldsExclude map[string]int) SQL {
 	length := len(data)
 	if length == 0 {
-		return NewSQL("", nil)
+		return NewSQL("")
 	}
 	var marksBuf bytes.Buffer
 	insertFields, insertMarks, insertParams, _ := _sqlFromQueryRes(data[0], fieldsExclude, false)
@@ -89,7 +89,7 @@ func sqlFromDatasForInsert(data []map[string]interface{}, tableName string, fiel
 		insertParams = append(insertParams, params...)
 	}
 	insertSQL := "insert into " + tableName + "  " + insertFields + " values " + strings.Trim(marksBuf.String(), ",")
-	return NewSQL(insertSQL, insertParams)
+	return NewSQL(insertSQL, insertParams...)
 }
 
 func concatStr(strs ...string) string {
