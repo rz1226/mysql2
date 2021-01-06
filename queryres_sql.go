@@ -2,6 +2,7 @@ package mysql2
 
 import (
 	"bytes"
+	"sort"
 	"strings"
 )
 
@@ -26,8 +27,15 @@ func _sqlFromQueryRes(data map[string]interface{}, fields map[string]int, includ
 	updateStr := ""
 	insertValuesSli := make([]interface{}, 0, 30)
 	// type lineData map[string]*fieldData
-	for k, v := range data {
+	//map用前要排序，否则会出错，导致多个insert生成的时候，字段名和参数对不上
+	keys := make([]string, 0, len(data))
+	for k, _ := range data {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
 
+	for _, k := range keys {
+		v := data[k]
 		// 略过过滤
 		lengthOfFields := len(fields)
 		if lengthOfFields > 0 {
