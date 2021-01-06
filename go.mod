@@ -1,4 +1,4 @@
-module mysql2
+module github.com/rz1226/mysql2
 
 go 1.14
 
