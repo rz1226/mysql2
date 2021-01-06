@@ -7,38 +7,6 @@ import (
 	"reflect"
 )
 
-//    query的结果是QueryRes ，本质是一个map，可以批量修改，然后QueryRes 可以转化成Struct,可单个也可以批量。
-/**
-
-这种结构体叫做BM， 业务模型
-orm tag用于从map转换到自身的时候map的key和自身的feild的对应关系
-auto tag用于生成update，或者insert语句   取值范围是1或者0
-type Tai struct {
-	Id          int64 `orm:"id" auto:"1""`
-	Name          string `orm:"name22"`
-	Age          int64 `orm:"age"`
-	Weight float64 `orm:"weight"`
-	Create_time string `orm:"create_time" auto:"1"`
-}
-
-
-res, err := db.Kit.Query("select * from tai where id = 4 limit 100")
-u := new(Tai)
-// 如果字段名不一致，自己很容易调整
-res.Map(func(r map[string]interface{}){
-	r["name22"] = r["name"]
-})
-fmt.Println(mysqlx.Map2Struct(res[0], u  ))
-
-// 批量
-var u  []*Tai
-mysqlx.Map2StructBatch(res , &u  )
-
-
-*/
-
-/********************************************************************/
-// 查询结果，数据结构, 可以用函数遍历,其内核是一个数组包着map， 其和普通数组map不同在于，可以用Map()遍历修改数据
 type QueryRes struct {
 	res []map[string]interface{}
 	err error
